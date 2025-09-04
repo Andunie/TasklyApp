@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!-- Stil bilgileri aynı kalabilir -->
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" style="padding: 20px 0;">
+                <table width="600" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    <tr>
+                        <td style="font-size: 24px; font-weight: bold; color: #333333; text-align: center; padding-bottom: 20px;">
+                            Taskly'e Hoş Geldiniz!
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 20px 0; color: #555555; font-size: 16px; line-height: 1.5; text-align: center;">
+                            Merhaba {FullName},<br><br>
+                            Taskly hesabınızı oluşturduğunuz için teşekkürler. Başlamak için tek yapmanız gereken aşağıdaki butona tıklayarak e-posta adresinizi doğrulamak.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="padding: 20px 0;">
+                            <a href="{CallbackUrl}" style="background-color: #007bff; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+                                Hesabımı Doğrula
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding-top: 20px; font-size: 12px; color: #777777; text-align: center;">
+                            Butona tıklamakta sorun yaşıyorsanız, aşağıdaki linki kopyalayıp tarayıcınıza yapıştırabilirsiniz:<br>
+                            <a href="{CallbackUrl}" style="color: #007bff;">{CallbackUrl}</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding-top: 20px; font-size: 12px; color: #777777; text-align: center;">
+                            Bu e-postayı siz istemediyseniz, lütfen dikkate almayınız.<br>
+                            &copy; {Year} Taskly
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
