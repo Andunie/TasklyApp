@@ -59,7 +59,7 @@ public class TaskService : ITaskService
 
         var leader = await _userManager.FindByIdAsync(userId);
         var message = $"Your task '{task.Title}' has been approved by {leader.FullName}.";
-        var link = $"/tasks/{task.Id}";
+        var link = $"app/my-tasks";
         await _notificationService.CreateAndSendNotificationsAsync(
             new List<string> { task.AssignedToUserId },
             userId,
@@ -124,7 +124,7 @@ public class TaskService : ITaskService
         // Liderin görevi kendisine ataması durumunda bildirim gönderilmez.
         var creator = await _userManager.FindByIdAsync(creatorUserId);
         var message = $"{creator.FullName} assigned you a new task: '{newTask.Title}'.";
-        var link = $"/tasks/{newTask.Id}";
+        var link = $"/app/my-tasks";
         await _notificationService.CreateAndSendNotificationsAsync(
             new List<string> { newTask.AssignedToUserId },
             creatorUserId,
@@ -406,7 +406,7 @@ public class TaskService : ITaskService
         // SignalR bildirimi
         var leader = await _userManager.FindByIdAsync(userId);
         var message = $"Your task '{task.Title}' was reopened by {leader.FullName}. Reason: \"{reopenDto.Comment}\"";
-        var link = $"/tasks/{task.Id}";
+        var link = $"app/my-tasks";
         await _notificationService.CreateAndSendNotificationsAsync(
             new List<string> { task.AssignedToUserId },
             userId,
@@ -482,7 +482,7 @@ public class TaskService : ITaskService
         {
             var user = await _userManager.FindByIdAsync(userId);
             var message = $"{user?.FullName ?? "A user"} submitted the task '{task.Title}' for review.";
-            var link = $"/app/team-tasks";
+            var link = $"app/my-task";
             await _notificationService.CreateAndSendNotificationsAsync(
                 new List<string> { task.Team.TeamLeadId },
                 userId,

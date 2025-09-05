@@ -77,7 +77,7 @@ namespace TasklyApp.Services
             // Bildirim mantığını merkezi servise devret
             var task = activity.Task;
             var message = $"{author.FullName} commented on an activity in task '{task.Title}'.";
-            var link = $"/tasks/{task.Id}";
+            var link = $"/app/activities/my";
             var targetUserIds = new List<string> { task.AssignedToUserId, task.Team.TeamLeadId };
 
             await _notificationService.CreateAndSendNotificationsAsync(targetUserIds, authorId, message, link);
@@ -145,7 +145,7 @@ namespace TasklyApp.Services
             // Bildirim mantığını merkezi servise devret
             var task = parentComment.ParentActivity.Task;
             var message = $"{replier.FullName} replied to a comment in task '{task.Title}'.";
-            var link = $"/tasks/{task.Id}";
+            var link = $"/app/team-activities";
 
             var targetUserIds = new List<string>
             {
