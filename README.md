@@ -27,7 +27,7 @@ This project is a demonstration of modern full-stack development practices, util
 ### Backend
 *   **Framework:** .NET 8
 *   **API:** ASP.NET Core Web API
-*   **Database:** Entity Framework Core with a relational database (e.g., SQL Server, PostgreSQL)
+*   **Database:** Entity Framework Core with a relational database (e.g., MySQL(used) SQL Server, PostgreSQL)
 *   **Authentication:** ASP.NET Core Identity with JWT
 *   **Real-time:** SignalR
 *   **AI Integration:** Google Gemini API
