@@ -50,7 +50,7 @@ Instructions on how to get a local copy up and running.
 
 *   .NET 8 SDK
 *   Node.js and npm
-*   A relational database (e.g., SQL Server)
+*   A relational database (e.g., MySQL, SQL Server)
 *   Google Gemini API Key
 *   Jitsi Meet is used for video conferencing (no setup required for the free version).
 
