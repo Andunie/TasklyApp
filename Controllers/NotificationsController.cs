@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using TasklyApp.Data;
+using TasklyApp.Dtos.Notifications;
 using TasklyApp.Services;
 
 namespace TasklyApp.Controllers
@@ -12,9 +15,11 @@ namespace TasklyApp.Controllers
     public class NotificationsController : ControllerBase
     {
         private readonly INotificationService _notificationService;
-        public NotificationsController(INotificationService notificationService)
+        private readonly ApplicationDbContext _context;
+        public NotificationsController(INotificationService notificationService, ApplicationDbContext context)
         {
             _notificationService = notificationService;
+            _context = context;
         }
 
         // GET: api/notifications
@@ -78,6 +83,30 @@ namespace TasklyApp.Controllers
             // Başarılı olduğunda, 200 OK ile birlikte yönlendirme linkini döndür.
             // Frontend bu linki kullanarak yönlendirme yapacak.
             return Ok(new { link = response.Data });
+        }
+
+        [HttpPost("send-meeting-invitation")]
+        public async Task<IActionResult> SendMeetingInvitation([FromBody] SendMeetingInvitationRequestDto request)
+        {
+            var senderId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // AsNoTracking() ile sadece okuma işlemi yapıyoruz, daha performanslı.
+            var sender = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == senderId);
+
+            if (sender == null)
+            {
+                return Unauthorized();
+            }
+
+            var message = $"{sender.FullName} sizi \"{request.MeetingTopic}\" başlıklı anlık bir toplantıya davet ediyor.";
+
+            await _notificationService.CreateAndSendNotificationsAsync(
+                request.TargetUserIds,
+                senderId, // Gönderen kişi kendine bildirim almasın
+                message,
+                request.MeetingLink
+            );
+
+            return Ok(new { Message = "Invitations sent successfully." });
         }
     }
 }
