@@ -1,0 +1,85 @@
+/* src/styles/Calendar.css */
+.backdrop-blur {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.bg-gradient {
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.3), rgba(0, 123, 255, 0.5), rgba(0, 123, 255, 0.7));
+}
+.bg-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15));
+  border-radius: inherit;
+}
+.animate.fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.time-slot {
+  height: 80px;
+}
+.event-card {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.badge-pulse .MuiBadge-badge::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  animation: pulse 1.6s ease-out infinite;
+  background: currentColor;
+  opacity: 0.35;
+}
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.35; }
+  70% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
+}
+.bg-purple {
+  background-color: #6f42c1 !important;
+}
+.bg-pink {
+  background-color: #e83e8c !important;
+}
+.bg-teal {
+  background-color: #20c997 !important;
+}
+.bg-cyan {
+  background-color: #0dcaf0 !important;
+}
+.bg-orange {
+  background-color: #fd7e14 !important;
+}
+.object-fit-cover {
+  object-fit: cover;
+}
+.rounded-circle {
+  border-radius: 50% !important;
+}
+.border-opacity-25 {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+.border-opacity-10 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.text-opacity-75 {
+  opacity: 0.75;
+}
+.hover-bg-light:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}

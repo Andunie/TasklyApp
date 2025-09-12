@@ -1,0 +1,34 @@
+
+body {
+  background-color: #f0f2f5;
+  color: #18191A;
+}
+body[data-mui-color-scheme='dark'] {
+  background-color: #18191A;
+  color: #E4E6EB;
+}
+
+.page-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+}
+body[data-mui-color-scheme='dark'] .page-placeholder {
+  background-color: #242526;
+  color: #E4E6EB;
+}
+
+.page-placeholder h1 {
+  font-size: 2.5rem;
+  color: #333;
+}
+
+.page-placeholder p {
+  font-size: 1.2rem;
+  color: #666;
+}
