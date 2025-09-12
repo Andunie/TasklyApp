@@ -94,6 +94,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IAIService, AIService>();
+builder.Services.AddScoped<IAssistantService, AssistantService>();
 
 builder.Services.AddSignalR();
 

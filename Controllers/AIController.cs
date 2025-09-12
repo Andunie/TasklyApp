@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TasklyApp.Dtos.AI;
 using TasklyApp.Dtos.Calendar;
 using TasklyApp.Services;
 
