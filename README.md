@@ -30,7 +30,7 @@ This project is a demonstration of modern full-stack development practices, util
 *   **Database:** Entity Framework Core with a relational database (e.g., MySQL(used) SQL Server, PostgreSQL)
 *   **Authentication:** ASP.NET Core Identity with JWT
 *   **Real-time:** SignalR
-*   **AI Integration:** Google Gemini API
+*   **AI Integration:** Google Gemini API & Groq API
 
 ### Frontend
 *   **Framework:** React 18
