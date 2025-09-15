@@ -112,7 +112,20 @@ public class DashboardService : IDashboardService
             TopOverdueTasks = tasksFromDb.Where(t => t.DueDate < now && t.Status != Task_Status.Done && t.Status != Task_Status.Cancelled).OrderBy(t => t.DueDate).Take(5).Select(t => new OverdueTaskDto { Id = t.Id, Title = t.Title, AssignedToUserName = t.AssignedToName, DaysOverdue = (int)(now - t.DueDate).TotalDays }).ToList(),
 
             // Performans ve Tanıma Metrikleri
-            TopPerformers = completedTasksPerUser.OrderByDescending(u => u.Value).Take(3).Select(u => new UserPerformanceDto { UserName = u.Label, CompletedTasksCount = u.Value }).ToList()
+            TopPerformers = completedTasksPerUser.OrderByDescending(u => u.Value).Take(3).Select(u => new UserPerformanceDto { UserName = u.Label, CompletedTasksCount = u.Value }).ToList(),
+
+            ActiveTasksDetails = tasksFromDb
+                .Where(t => (t.Status == Task_Status.ToDo || t.Status == Task_Status.InProgress) && t.AssignedToName != null)
+                .OrderBy(t => t.DueDate) // Yaklaşan tarihe göre sıralamak mantıklı olabilir
+                .Select(t => new ActiveTaskDetailDto
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    AssignedToUserName = t.AssignedToName,
+                    DueDate = t.DueDate,
+                    Priority = t.Priority
+                })
+                .ToList()
         };
 
         response.Data = stats;

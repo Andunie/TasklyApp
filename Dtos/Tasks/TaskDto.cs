@@ -15,6 +15,7 @@ public class TaskDto
     public int TeamId { get; set; }
     public string TeamName { get; set; }
     public string TeamLeadId { get; set; }
+    public string TeamLeaderUserName { get; set; }
     public string AssignedToUserId { get; set; }
     public string AssignedToUserName { get; set; }
 }

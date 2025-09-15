@@ -36,4 +36,6 @@ public class DashboardStatsDto
     /// Son dönemde en çok görev tamamlayan ilk 3 kullanıcı.
     /// </summary>
     public List<UserPerformanceDto> TopPerformers { get; set; } = new();
+
+    public List<ActiveTaskDetailDto> ActiveTasksDetails { get; set; } = new();
 }

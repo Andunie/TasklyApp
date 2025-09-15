@@ -41,7 +41,7 @@ namespace TasklyApp.Controllers
         }
 
         // Bu metod, CreatedAtAction'ın çalışması için gereklidir. Şimdilik boş bırakabiliriz.
-        // GET: api/tasks/5
+        // GET: api/tasks/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTaskById(int id)
         {

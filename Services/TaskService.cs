@@ -209,6 +209,8 @@ public class TaskService : ITaskService
         var task = await _context.Tasks
             .Include(t => t.Team)
                 .ThenInclude(team => team.Members) // Güvenlik kontrolü için üyeleri de yüklüyoruz
+            .Include(t => t.Team)
+                .ThenInclude(team => team.TeamLeader)
             .Include(t => t.AssignedTo)
             .AsNoTracking()
             .FirstOrDefaultAsync(t => t.Id == taskId);
@@ -242,6 +244,7 @@ public class TaskService : ITaskService
             TeamId = task.Team.Id,
             TeamName = task.Team.Name,
             TeamLeadId = task.Team.TeamLeadId,
+            TeamLeaderUserName = task.Team.TeamLeader?.FullName ?? "N/A",
             AssignedToUserId = task.AssignedTo.Id,
             AssignedToUserName = task.AssignedTo.FullName
         };

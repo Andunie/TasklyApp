@@ -20,7 +20,7 @@ namespace TasklyApp.Services
 
         public async Task<string> GetResponseAsync(string question, string userId, int? teamId)
         {
-            var intent = DetermineIntent(question);
+            var intent = await DetermineIntent(question);
 
             // RAG (Retrieval-Augmented Generation) Prensibi:
             // 1. Veriyi Çek (Retrieval)
@@ -34,19 +34,35 @@ namespace TasklyApp.Services
             return await _aiService.GenerateTextAsync(finalPrompt);
         }
 
-        private AssistantIntent DetermineIntent(string question)
+        private async Task<AssistantIntent> DetermineIntent(string question)
         {
-            var q = question.ToLowerInvariant();
+            // 1. Yapay zekaya sunacağımız seçenekleri (enum isimlerini) hazırlıyoruz.
+            var intentOptions = string.Join(", ", Enum.GetNames(typeof(AssistantIntent)));
 
-            if (q.Contains("en aktif") || q.Contains("en çok çalışan") || q.Contains("en meşgul") || q.Contains("en çok görev"))
+            // 2. Yapay zeka için özel bir "sınıflandırma prompt'u" oluşturuyoruz.
+            var classificationPrompt = $"""
+                You are an expert at classifying user requests. Analyze the user's question and determine the single most relevant category from the following list.
+                Your response must be ONLY ONE WORD from this list, with no extra text or punctuation.
+
+                Categories: [{intentOptions}]
+
+                User Question: "{question}"
+
+                Most Relevant Category:
+                """;
+
+            // 3. Yapay zekadan sınıflandırma yapmasını istiyoruz.
+            string intentAsString = await _aiService.GenerateTextAsync(classificationPrompt);
+
+            // 4. Gelen cevabı temizleyip enum'a çevirmeye çalışıyoruz.
+            // Enum.TryParse, büyük/küçük harf duyarsız bir şekilde string'i enum'a çevirir.
+            if (Enum.TryParse<AssistantIntent>(intentAsString.Trim(), true, out var determinedIntent))
             {
-                return AssistantIntent.MostActiveUser;
-            }
-            if (q.Contains("vadesi geçmiş") || q.Contains("gecikmiş görevler") || q.Contains("gecikti mi"))
-            {
-                return AssistantIntent.OverdueTasks;
+                return determinedIntent;
             }
 
+            // Eğer yapay zeka beklenmedik bir cevap verirse (boşluk, açıklama vb.),
+            // güvenli bir varsayılan değere dönüyoruz.
             return AssistantIntent.Unknown;
         }
 
@@ -106,6 +122,51 @@ namespace TasklyApp.Services
                     sb.AppendLine("Vadesi geçmiş görevlerin listesi:");
                     overdueTasks.ForEach(t => sb.AppendLine($"- '{t.Title}' görevi ({t.AssigneeName}). Son tarih: {t.DueDate:dd MMMM}"));
                     break;
+
+                case AssistantIntent.UpcomingDeadlines:
+                    var upcomingTasks = await tasksQuery
+                        .Where(t => t.Status != Task_Status.Done && t.Status != Task_Status.Cancelled && t.DueDate > DateTime.UtcNow && t.DueDate <= DateTime.UtcNow.AddDays(7))
+                        .OrderBy(t => t.DueDate)
+                        .Select(t => new { t.Title, t.DueDate, AssigneeName = t.AssignedTo.FullName ?? "Atanmamış" })
+                        .Take(10)
+                        .ToListAsync();
+
+                    if (!upcomingTasks.Any()) return "Önümüzdeki 7 gün içinde teslim tarihi yaklaşan bir görev bulunmuyor.";
+
+                    sb.AppendLine("Önümüzdeki 7 gün içinde teslim tarihi yaklaşan görevler:");
+                    upcomingTasks.ForEach(t => sb.AppendLine($"- '{t.Title}' görevi ({t.AssigneeName}). Son tarih: {t.DueDate:dd MMMM}"));
+                    break;
+
+                case AssistantIntent.RecentCompletions:
+                    var recentTasks = await tasksQuery
+                        .Where(t => t.Status == Task_Status.Done && t.CompletedAt.HasValue && t.CompletedAt >= DateTime.UtcNow.AddDays(-7))
+                        .OrderByDescending(t => t.CompletedAt)
+                        .Select(t => new { t.Title, CompletedDate = t.CompletedAt.Value, AssigneeName = t.AssignedTo.FullName ?? "Atanmamış" })
+                        .Take(10)
+                        .ToListAsync();
+
+                    if (!recentTasks.Any()) return "Son 7 gün içinde tamamlanmış bir görev bulunmuyor.";
+
+                    sb.AppendLine("Son 7 gün içinde tamamlanan görevler:");
+                    recentTasks.ForEach(t => sb.AppendLine($"- '{t.Title}' görevi ({t.AssigneeName}) {t.CompletedDate:dd MMMM} tarihinde tamamlandı."));
+                    break;
+
+                case AssistantIntent.HighPriorityTasks:
+                    var highPriorityTasks = await tasksQuery
+                        .Where(t => (t.Priority == PriortyLevel.High || t.Priority == PriortyLevel.Urgent) && t.Status != Task_Status.Done && t.Status != Task_Status.Cancelled)
+                        .OrderBy(t => t.DueDate)
+                        .Select(t => new { t.Title, t.Priority, AssigneeName = t.AssignedTo.FullName ?? "Atanmamış" })
+                        .Take(10)
+                        .ToListAsync();
+
+                    if (!highPriorityTasks.Any()) return "Yüksek veya kritik önceliğe sahip aktif bir görev bulunmuyor.";
+
+                    sb.AppendLine("Yüksek ve kritik öncelikli aktif görevler:");
+                    highPriorityTasks.ForEach(t => sb.AppendLine($"- '{t.Title}' görevi ({t.AssigneeName}), Öncelik: {t.Priority}"));
+                    break;
+
+                // Eklemeleri yapıldıktan sonra bu kısımlar doldurulabilir.
+
 
                 default: // Unknown Intent
                     sb.AppendLine("Kullanıcıya genel bilgi ver. İşte mevcut takım(lar) hakkında bazı temel istatistikler:");
